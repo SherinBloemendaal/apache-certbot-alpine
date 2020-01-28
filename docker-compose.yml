@@ -1,0 +1,22 @@
+version: '3'
+services:
+  apache:
+    build: apache
+    restart: always
+    volumes:
+      - /srv/httpd/htdocs:/usr/local/apache2/htdocs
+      - /srv/certbot/htdocs/:/usr/local/certbot/htdocs
+      - /srv/certbot/etc/:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    command: "/bin/sh -c 'apachectl -D FOREGROUND & while :; do sleep 6h & wait $${!}; apachectl -k graceful; done'"
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    dns: 8.8.8.8
+    volumes:
+      - /srv/certbot/etc/:/etc/letsencrypt
+      - /srv/certbot/lib/:/var/lib/letsencrypt
+      - /srv/certbot/htdocs/:/usr/local/certbot/htdocs
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
