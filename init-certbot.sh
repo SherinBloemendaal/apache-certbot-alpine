@@ -38,8 +38,8 @@ path="/etc/letsencrypt/live/$domains"
 mkdir -p "$CERTBOT_PATH/live/$domains"
 docker-compose run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:1024 -days 1\
-    -keyout '$path/privkey1.pem' \
-    -out '$path/fullchain1.pem' \
+    -keyout '$path/privkey.pem' \
+    -out '$path/fullchain.pem' \
     -subj '/CN=localhost'" certbot
 echo
 
